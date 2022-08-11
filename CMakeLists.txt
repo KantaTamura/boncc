@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(boncc C)
 
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
+#set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "-g -fno-common")
