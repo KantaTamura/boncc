@@ -20,7 +20,7 @@ static void pop(char *arg) {
 // Round up `n` to the nearest multiple of `align`. For instance,
 // align_to(5, 8) returns 8 and align_to(11, 8) returns 16.
 static int align_to(int n, int align) {
-    return (n + align + 1) / align * align;
+    return (n + align - 1) / align * align;
 }
 
 // Compute the absolute address of a given node.
@@ -110,6 +110,22 @@ static void gen_stmt(Node *node) {
             printf(".L.else.%d:\n", c);
             if (node->els)
                 gen_stmt(node->els);
+            printf(".L.end.%d:\n", c);
+            return;
+        }
+        case ND_FOR: {
+            int c = count();
+            gen_stmt(node->init);
+            printf(".L.begin.%d:\n", c);
+            if (node->cond) {
+                gen_expr(node->cond);
+                printf("  cmp $0, %%rax\n");
+                printf("  je  .L.end.%d\n", c);
+            }
+            gen_stmt(node->then);
+            if (node->inc)
+                gen_expr(node->inc);
+            printf("  jmp .L.begin.%d\n", c);
             printf(".L.end.%d:\n", c);
             return;
         }
